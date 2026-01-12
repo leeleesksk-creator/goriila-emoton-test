@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gorilla Test</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 32px;
+        }
+
+        #video-container {
+            position: relative;
+            width: 80%;
+            max-width: 800px;
+        }
+
+        #video-container.hidden {
+            display: none;
+        }
+
+        .modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #f0f0f0;
+            border: 3px solid red;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+            z-index: 1000;
+            cursor: pointer;
+            min-width: 300px;
+            text-align: center;
+        }
+
+        .modal-title {
+            color: red;
+            font-weight: bold;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .modal-content {
+            color: black;
+            font-size: 18px;
+        }
+
+        #end-screen {
+            display: none;
+            text-align: center;
+        }
+
+        #end-screen.show {
+            display: block;
+        }
+
+        #question {
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        #reveal {
+            font-size: 24px;
+            color: #ff6b6b;
+            margin-top: 30px;
+        }
+
+        iframe {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Count white team passes</h1>
+    
+    <div id="video-container">
+        <iframe 
+            id="youtube-video"
+            src="https://www.youtube.com/embed/vJG698U2Mvo?autoplay=1&enablejsapi=1" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowfullscreen>
+        </iframe>
+    </div>
+
+    <div id="end-screen">
+        <div id="question">How many passes?</div>
+        <div id="reveal"></div>
+    </div>
+
+    <script>
+        const needyMessages = [
+            "Why ignore me?",
+            "I'm lonely",
+            "Look at me!",
+            "Please notice me!",
+            "I need attention!",
+            "Don't leave me alone!",
+            "Why won't you respond?",
+            "I'm so sad...",
+            "Pay attention to me!"
+        ];
+
+        let modalCount = 0;
+        let testStartTime = Date.now();
+        const TEST_DURATION = 80000; // 80 seconds
+
+        function createModal() {
+            // Don't create modals after test ends
+            if (Date.now() - testStartTime >= TEST_DURATION) {
+                return;
+            }
+
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            
+            const title = document.createElement('div');
+            title.className = 'modal-title';
+            title.textContent = 'Error';
+            
+            const content = document.createElement('div');
+            content.className = 'modal-content';
+            const randomMessage = needyMessages[Math.floor(Math.random() * needyMessages.length)];
+            content.textContent = randomMessage;
+            
+            modal.appendChild(title);
+            modal.appendChild(content);
+            
+            // Close modal on click
+            modal.addEventListener('click', function() {
+                modal.remove();
+            });
+            
+            document.body.appendChild(modal);
+            
+            // Schedule next modal
+            scheduleNextModal();
+        }
+
+        function scheduleNextModal() {
+            // Random interval between 3 to 8 seconds
+            const interval = Math.random() * 5000 + 3000;
+            
+            setTimeout(() => {
+                if (Date.now() - testStartTime < TEST_DURATION) {
+                    createModal();
+                }
+            }, interval);
+        }
+
+        function endTest() {
+            const videoContainer = document.getElementById('video-container');
+            const endScreen = document.getElementById('end-screen');
+            const reveal = document.getElementById('reveal');
+            
+            // Hide video
+            videoContainer.classList.add('hidden');
+            
+            // Show end screen
+            endScreen.classList.add('show');
+            
+            // Reveal the gorilla question after a short delay
+            setTimeout(() => {
+                reveal.textContent = 'Did you see the gorilla?';
+            }, 2000);
+        }
+
+        // Start the test
+        window.addEventListener('load', function() {
+            // Start showing modals after 5 seconds
+            setTimeout(() => {
+                createModal();
+            }, 5000);
+            
+            // End test after 80 seconds
+            setTimeout(() => {
+                endTest();
+            }, TEST_DURATION);
+        });
+    </script>
+</body>
+</html>
