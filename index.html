@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gorilla Test</title>
+    <link rel="stylesheet" href="styles.css">
     <style>
         body {
             margin: 0;
@@ -31,34 +32,6 @@
 
         #video-container.hidden {
             display: none;
-        }
-
-        .modal {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: #f0f0f0;
-            border: 3px solid red;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
-            z-index: 1000;
-            cursor: pointer;
-            min-width: 300px;
-            text-align: center;
-        }
-
-        .modal-title {
-            color: red;
-            font-weight: bold;
-            font-size: 24px;
-            margin-bottom: 15px;
-        }
-
-        .modal-content {
-            color: black;
-            font-size: 18px;
         }
 
         #end-screen {
@@ -105,65 +78,13 @@
         <div id="reveal"></div>
     </div>
 
+    <!-- Progressive difficulty modal system -->
+    <script src="script.js"></script>
+    
     <script>
-        const needyMessages = [
-            "Why ignore me?",
-            "I'm lonely",
-            "Look at me!",
-            "Please notice me!",
-            "I need attention!",
-            "Don't leave me alone!",
-            "Why won't you respond?",
-            "I'm so sad...",
-            "Pay attention to me!"
-        ];
-
-        let modalCount = 0;
-        let testStartTime = Date.now();
+        // Video test duration and end screen logic
         const TEST_DURATION = 80000; // 80 seconds
-
-        function createModal() {
-            // Don't create modals after test ends
-            if (Date.now() - testStartTime >= TEST_DURATION) {
-                return;
-            }
-
-            const modal = document.createElement('div');
-            modal.className = 'modal';
-            
-            const title = document.createElement('div');
-            title.className = 'modal-title';
-            title.textContent = 'Error';
-            
-            const content = document.createElement('div');
-            content.className = 'modal-content';
-            const randomMessage = needyMessages[Math.floor(Math.random() * needyMessages.length)];
-            content.textContent = randomMessage;
-            
-            modal.appendChild(title);
-            modal.appendChild(content);
-            
-            // Close modal on click
-            modal.addEventListener('click', function() {
-                modal.remove();
-            });
-            
-            document.body.appendChild(modal);
-            
-            // Schedule next modal
-            scheduleNextModal();
-        }
-
-        function scheduleNextModal() {
-            // Random interval between 3 to 8 seconds
-            const interval = Math.random() * 5000 + 3000;
-            
-            setTimeout(() => {
-                if (Date.now() - testStartTime < TEST_DURATION) {
-                    createModal();
-                }
-            }, interval);
-        }
+        const testStartTime = Date.now();
 
         function endTest() {
             const videoContainer = document.getElementById('video-container');
@@ -182,14 +103,8 @@
             }, 2000);
         }
 
-        // Start the test
+        // End test after 80 seconds
         window.addEventListener('load', function() {
-            // Start showing modals after 5 seconds
-            setTimeout(() => {
-                createModal();
-            }, 5000);
-            
-            // End test after 80 seconds
             setTimeout(() => {
                 endTest();
             }, TEST_DURATION);
